@@ -1,0 +1,4 @@
+<mat-card class="gift-card">
+  <div class="image-wrap"><img [src]="gift.imagem" [alt]="gift.nome" loading="lazy"><span class="category">{{ gift.categoria }}</span></div>
+  <mat-card-content><h3>{{ gift.nome }}</h3><p class="description">{{ gift.descricao }}</p><div class="card-bottom"><strong>{{ gift.preco | currency:'BRL':'symbol':'1.2-2' }}</strong><button mat-flat-button class="choose-button" (click)="choose.emit(gift)">Escolher <mat-icon>arrow_forward</mat-icon></button></div></mat-card-content>
+</mat-card>

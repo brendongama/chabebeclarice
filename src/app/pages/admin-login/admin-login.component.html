@@ -1,0 +1,15 @@
+<main class="login-page">
+  <section class="login-art" aria-hidden="true"><span class="flower">✿</span><span class="art-label">CLARICE<br><small>painel privado</small></span></section>
+  <mat-card class="login-card">
+    <a routerLink="/" class="back-link"><mat-icon>arrow_back</mat-icon> Voltar para a lista</a>
+    <span class="eyebrow">Acesso restrito</span>
+    <h1>Área administrativa</h1>
+    <p class="intro">Entre para acompanhar os presentes escolhidos para a Clarice.</p>
+    <form [formGroup]="form" (ngSubmit)="login()">
+      <mat-form-field appearance="outline"><mat-label>Usuário</mat-label><input matInput formControlName="username" autocomplete="username"><mat-icon matPrefix>person_outline</mat-icon>@if (form.controls.username.hasError('required')) { <mat-error>Informe o usuário</mat-error> }</mat-form-field>
+      <mat-form-field appearance="outline"><mat-label>Senha</mat-label><input matInput type="password" formControlName="password" autocomplete="current-password"><mat-icon matPrefix>lock_outline</mat-icon>@if (form.controls.password.hasError('required')) { <mat-error>Informe a senha</mat-error> }</mat-form-field>
+      @if (errorMessage) { <p class="error-message">{{ errorMessage }}</p> }
+      <button mat-flat-button class="login-button" type="submit">Entrar <mat-icon>arrow_forward</mat-icon></button>
+    </form>
+  </mat-card>
+</main>

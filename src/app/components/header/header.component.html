@@ -1,0 +1,12 @@
+<mat-toolbar class="toolbar">
+  <a class="brand" routerLink="/" aria-label="Página inicial">
+    <span class="brand-mark">🧸</span><span class="brand-name">Clarice</span>
+  </a>
+  <nav aria-label="Navegação principal">
+    <a routerLink="/" fragment="lista">Lista</a>
+    <a routerLink="/admin">Admin</a>
+  </nav>
+  <div class="counter" matBadge="{{ available().length }}" matBadgeColor="warn" matBadgeOverlap="false">
+    <mat-icon>redeem</mat-icon><span>Presentes disponíveis</span>
+  </div>
+</mat-toolbar>
