@@ -16,5 +16,17 @@ export class ChooseGiftDialogComponent {
   private readonly snackBar = inject(MatSnackBar);
   private readonly dialogRef = inject(MatDialogRef<ChooseGiftDialogComponent>);
   readonly form = inject(FormBuilder).nonNullable.group({ nomeConvidado: ['', [Validators.required, Validators.minLength(2)]] });
-  confirm(): void { if (this.form.invalid) { this.form.markAllAsTouched(); return; } this.service.escolherPresente(this.data.id, this.form.controls.nomeConvidado.value.trim()); this.dialogRef.close(true); this.snackBar.open('Presente reservado com carinho!', 'Fechar', { duration: 3500, panelClass: 'success-snackbar' }); window.open(this.data.linkShopee, '_blank', 'noopener,noreferrer'); }
+  confirm(): void {
+    if (this.form.invalid) { this.form.markAllAsTouched(); return; }
+    const nomeConvidado = this.form.controls.nomeConvidado.value.trim();
+    this.service.escolherPresente(this.data.id, nomeConvidado).subscribe({
+      next: gift => {
+        this.service.atualizarPresente(gift);
+        this.dialogRef.close(true);
+        this.snackBar.open('Presente reservado com carinho!', 'Fechar', { duration: 3500, panelClass: 'success-snackbar' });
+        window.open(this.data.linkShopee, '_blank', 'noopener,noreferrer');
+      },
+      error: () => this.snackBar.open('Não foi possível reservar este presente. Tente novamente.', 'Fechar', { duration: 4500 })
+    });
+  }
 }

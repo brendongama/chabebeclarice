@@ -1,5 +1,7 @@
-import { Injectable, computed, signal } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Injectable, computed, inject, signal } from '@angular/core';
 import { Gift } from '../models/gift';
+import { API_URL } from './api.config';
 
 const image = (source: string) => source.startsWith('http')
   ? source
@@ -7,6 +9,7 @@ const image = (source: string) => source.startsWith('http')
 
 @Injectable({ providedIn: 'root' })
 export class GiftService {
+  private readonly http = inject(HttpClient);
   private readonly gifts = signal<Gift[]>([
     { id: 1, nome: 'Fralda Pampers Premium Care M', descricao: 'Fraldas macias e respiráveis para acompanhar cada descoberta da Clarice.', categoria: 'Higiene', preco: 69.9, imagem: image('photo-1584839404042-8bc8a3f7f0f0'), linkShopee: 'https://shopee.com.br/presente-Clarice-01', escolhido: false, nomeConvidado: null },
     { id: 2, nome: 'Fralda Pampers G', descricao: 'Conforto e proteção para os momentos de sono e brincadeira.', categoria: 'Higiene', preco: 74.9, imagem: image('photo-1604917018610-6c5c9b30e3c6'), linkShopee: 'https://shopee.com.br/presente-Clarice-02', escolhido: false, nomeConvidado: null },
@@ -30,10 +33,21 @@ export class GiftService {
     { id: 20, nome: 'Bolsa Maternidade', descricao: 'Organização elegante para levar tudo que a Clarice precisa.', categoria: 'Passeio', preco: 219.9, imagem: image('photo-1553062407-98eeb64c6a62'), linkShopee: 'https://shopee.com.br/presente-Clarice-20', escolhido: false, nomeConvidado: null }
   ]);
 
+  constructor() {
+    this.http.get<Gift[]>(`${API_URL}/gifts`).subscribe({
+      next: gifts => this.gifts.set(gifts),
+      error: error => console.error('Não foi possível carregar os presentes.', error)
+    });
+  }
+
   getAll() { return this.gifts.asReadonly(); }
   getDisponiveis() { return computed(() => this.gifts().filter(gift => !gift.escolhido)); }
   getEscolhidos() { return computed(() => this.gifts().filter(gift => gift.escolhido)); }
-  escolherPresente(id: number, nomeConvidado: string): void {
-    this.gifts.update(gifts => gifts.map(gift => gift.id === id ? { ...gift, escolhido: true, nomeConvidado } : gift));
+  escolherPresente(id: number, nomeConvidado: string) {
+    return this.http.post<Gift>(`${API_URL}/gifts/${id}/reserve`, { nomeConvidado });
+  }
+
+  atualizarPresente(gift: Gift): void {
+    this.gifts.update(gifts => gifts.map(current => current.id === gift.id ? gift : current));
   }
 }
