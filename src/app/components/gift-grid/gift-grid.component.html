@@ -1,4 +1,4 @@
 <section class="list-section" id="lista">
   <div class="section-heading"><div><span class="eyebrow">Escolha com carinho</span><h2>Sugestões de presentes para a Clarice</h2></div><span class="available-count">{{ gifts().length }} disponíveis</span></div>
-  @if (gifts().length) { <div class="gift-grid">@for (gift of gifts(); track gift.id) { <app-gift-card [gift]="gift" (choose)="openDialog($event)" /> }</div> } @else { <div class="empty"><mat-icon>favorite</mat-icon><h3>Todos os presentes já foram escolhidos</h3><p>Obrigada por fazer parte deste momento especial.</p></div> }
+  @if (loading()) { <div class="loading" aria-label="Carregando presentes"><mat-spinner diameter="44" /></div> } @else if (gifts().length) { <div class="gift-grid">@for (gift of gifts(); track gift.id) { <app-gift-card [gift]="gift" (choose)="openDialog($event)" /> }</div> } @else { <div class="empty"><mat-icon>favorite</mat-icon><h3>Todos os presentes já foram escolhidos</h3><p>Obrigada por fazer parte deste momento especial.</p></div> }
 </section>
