@@ -24,9 +24,30 @@ export class ChooseGiftDialogComponent {
         this.service.atualizarPresente(gift);
         this.dialogRef.close(true);
         this.snackBar.open('Presente reservado com carinho!', 'Fechar', { duration: 3500, panelClass: 'success-snackbar' });
-        window.open(this.data.linkShopee, '_blank', 'noopener,noreferrer');
+        this.openShopeeLink(this.data.linkShopee);
       },
       error: () => this.snackBar.open('Não foi possível reservar este presente. Tente novamente.', 'Fechar', { duration: 4500 })
     });
+  }
+
+  private openShopeeLink(webUrl: string): void {
+    const userAgent = navigator.userAgent.toLowerCase();
+    const isAndroid = userAgent.includes('android');
+    const isIos = /iphone|ipad|ipod/.test(userAgent);
+
+    if (isAndroid) {
+      const url = new URL(webUrl);
+      const fallback = encodeURIComponent(webUrl);
+      window.location.href = `intent://${url.host}${url.pathname}${url.search}#Intent;scheme=https;package=com.shopee.br;S.browser_fallback_url=${fallback};end`;
+      return;
+    }
+
+    if (isIos) {
+      window.location.href = `shopee://open?url=${encodeURIComponent(webUrl)}`;
+      window.setTimeout(() => window.location.assign(webUrl), 1200);
+      return;
+    }
+
+    window.open(webUrl, '_blank', 'noopener,noreferrer');
   }
 }
